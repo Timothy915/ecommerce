@@ -1,0 +1,55 @@
+{% extends 'store/Main.html' %}
+{% load static %}
+
+<style>
+    body {
+        background-color: #f0f0f0; /* Change to your desired background color */
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+    }
+
+    .container {
+        text-align: center;
+        margin-top: 150px;
+    }
+
+    h1 {
+        color: #333; /* Change to your desired text color */
+        font-size: 3rem; /* Adjust the font size as needed */
+    }
+
+    p {
+        color: #777; /* Change to your desired text color */
+        font-size: 1.5rem; /* Adjust the font size as needed */
+        margin-top: 20px;
+    }
+
+    @media (max-width: 768px) {
+        /* Adjust styles for smaller screens here */
+        h1 {
+            font-size: 2rem;
+        }
+
+        p {
+            font-size: 1.2rem;
+        }
+    }
+</style>
+
+{% block content %}
+<div class="navbar">
+    <!-- Add your navigation menu code from Main.html here -->
+    <nav>
+        <ul>
+            <li><a href="{% url 'store' %}">Home</a></li>
+            <!-- Add other navigation links as needed -->
+        </ul>
+    </nav>
+</div>
+
+<div class="container">
+    <h1>No results found!</h1>
+    <p>Please try a different search query.</p>
+</div>
+{% endblock content %}

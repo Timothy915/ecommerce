@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -79,14 +80,15 @@ WSGI_APPLICATION = 'ecommerce.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'zm',
-        'USER': 'timothy',
-        'PASSWORD': 'Tim??..0964343103',
-        'HOST': 'localhost',  # Or the host where your MySQL server is running
-        'PORT': '3306',           # Leave this empty to use the default MySQL port (3306)
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',  # Use the PostgreSQL database engine
+        'NAME': 'newdb',  # Replace with your desired database name
+        'USER': 'newuser',  # Replace with your PostgreSQL username
+        'PASSWORD': 'password',  # Replace with your PostgreSQL password
+        'HOST': 'localhost',  # Or the host where your PostgreSQL server is running
+        'PORT': '',  # Leave this empty to use the default PostgreSQL port (5432)
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -112,11 +114,12 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Lusaka' 
 
 USE_I18N = True
 
 USE_TZ = True
+
 
 
 # Static files (CSS, JavaScript, Images)

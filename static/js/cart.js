@@ -1,23 +1,28 @@
-// cart.js
-
 var updateBtns = document.getElementsByClassName('update-cart');
 
 for (var i = 0; i < updateBtns.length; i++) {
     updateBtns[i].addEventListener('click', function () {
-        var productId = this.dataset.product;
-        var action = this.dataset.action;
+        var button = this; // Store a reference to the button
+        if (button.disabled) {
+            // If the button is already disabled, return immediately to prevent multiple clicks
+            return;
+        }
+        button.disabled = true; // Disable the button to prevent multiple clicks
+        var productId = button.dataset.product;
+        var action = button.dataset.action;
         console.log('productId', productId, 'action', action);
         console.log('USER:', user);
 
         if (user === 'AnonymousUser') {
             console.log('Not logged in');
+            // You can handle the case of an anonymous user here if needed
         } else {
-            updateUserOrder(productId, action);
+            updateUserOrder(productId, action, button); // Pass the button reference to the function
         }
     });
 }
 
-function updateUserOrder(productId, action) {
+function updateUserOrder(productId, action, button) {
     console.log('User is logged in, sending data...');
 
     var url = '/update_item/';
@@ -38,10 +43,13 @@ function updateUserOrder(productId, action) {
     })
     .then((data) => {
         console.log('data:', data);
-        location.reload()
+        location.reload();
     })
     .catch((error) => {
         console.error('Error:', error);
         // Handle the error here, e.g., display an error message to the user
+    })
+    .finally(() => {
+        button.disabled = false; // Re-enable the button after the request is complete
     });
 }

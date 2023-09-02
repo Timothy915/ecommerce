@@ -1,7 +1,32 @@
 {% extends 'store/Main.html' %}
 {% load static %}
+
 {% block content %}
 <style>
+    /* Style the promotion section */
+.promotion-section {
+    background-color: #f8f8f8;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.promotion-section h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.promotion-section ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.promotion-section li {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
     /* Custom CSS for responsive design */
     .product-container {
         display: flex;
@@ -35,9 +60,160 @@
             flex-basis: 100%; /* Full width on the smallest screens */
         }
     }
-</style>
-<div class="container">
-    <h1>Product Listing</h1>
+        /* Style the form container */
+        .search-form-container {
+        text-align: center;
+        margin: 20px;
+        margin-top: 50px;
+    }
+
+    /* Style the form fields */
+    .search-input {
+        padding: 10px;
+        width: 300px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    /* Style the search button */
+    .search-button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+  /* Keyframes animation for the slide */
+  @keyframes slide {
+            0% {
+                transform: translateX(100%); /* Start from right */
+            }
+            100% {
+                transform: translateX(-100%); /* End at left */
+            }
+        }
+
+        /* Styling for the promotion section */
+        .promotion-section {
+            margin-top: 20px; /* Add margin to move the container down */
+            text-align: center;
+        }
+
+        /* Styling for the promotion list */
+        .logos {
+            overflow: hidden;
+            padding: 20px 0; /* Reduced padding */
+            white-space: nowrap;
+            position: relative;
+        }
+
+        .logos:before,
+        .logos:after {
+            position: absolute;
+            top: 0;
+            width: 250px;
+            height: 100%;
+            content: "";
+            z-index: 2;
+        }
+
+        .logos:before {
+            left: 0;
+            background: linear-gradient(to left, rgba(255, 255, 255, 0));
+        }
+
+        .logos:after {
+            right: 0;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0));
+        }
+
+        /* Styling for the promotion card */
+        .promotion-card {
+            display: inline-block;
+            vertical-align: top;
+            margin: 0 20px;
+            padding: 20px;
+            background-color: #fff; /* Light background color */
+            color: #333; /* Text color */
+            width: 250px;
+            animation: 35s slide linear infinite;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Lighter shadow */
+            border-radius: 10px; /* Rounded corners */
+            transition: transform 0.3s ease-in-out; /* Add smooth hover effect */
+        }
+
+        /* Styling for the promotion title */
+        .promotion-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        /* Styling for the promotion percentage */
+        .promotion-percentage {
+            font-size: 16px;
+        }
+
+        /* Styling for the promotion image container */
+        .promotion-image-container {
+            text-align: center;
+        }
+
+        /* Styling for the promotion image */
+        .promotion-image {
+            height: 150px;
+            width: auto;
+        }
+
+        /* Add hover effect */
+        .promotion-card:hover {
+            transform: scale(1.05); /* Scale up the card on hover */
+        }
+    </style>
+</head>
+<div class="promotion-section">
+    <div class="logos">
+        {% for promotion in promotions %}
+            <div class="promotion-card">
+                <h2 class="promotion-title">{{ promotion.name }}</h2>
+                <p class="promotion-percentage">{{ promotion.discount_percentage }}%</p>
+                <div class="promotion-image-container">
+                    {% if promotion.promotion_image %}
+                        <img src="{{ promotion.promotion_image }}" alt="{{ promotion.name }}" class="promotion-image">
+                    {% endif %}
+                </div>
+                <!-- Timer element for the promotion -->
+                <div class="promotion-timer">
+                    {% if promotion.start_date <= current_date and promotion.end_date >= current_date %}
+                        {% with time_left=promotion.end_date|timeuntil:current_date %}
+                            {% if time_left %}
+                                {{ time_left }}
+                            {% else %}
+                                Expires today
+                            {% endif %}
+                        {% endwith %}
+                    {% else %}
+                        Promotion has not started yet
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+
+<div class="search-form-container">
+    <form method="get" action="{% url 'product_search' %}">
+        <input class="search-input" type="text" name="search_query" placeholder="Enter your search query...">
+        <button class="search-button" type="submit">Search</button>
+    </form>
+</div>
+
     <div class="product-container">
         {% for product in products %}
         <div class="product">
@@ -45,13 +221,20 @@
             <h3>{{ product.name }}</h3>
             <p>K{{ product.price|floatformat:2 }}</p>
             <button data-product="{{ product.id }}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
-            <a class="btn btn-outline-success" href="#">View</a>
+            <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-success">View</a>
+            <a class="btn btn-outline-success" href="#">Buy Now</a>
         </div>
         {% endfor %}
     </div>
 </div>
 
+    
+
 <!-- Link to the external JavaScript file -->
 <script src="{% static 'js/cart.js' %}"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+</body>
 
 {% endblock content %}
