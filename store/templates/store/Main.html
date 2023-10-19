@@ -21,6 +21,7 @@
     font-size: 30x;
    
   }
+  
 </style>
 <script type="text/javascript">
   var user = '{{ request.user }}';
@@ -47,7 +48,7 @@ var csrftoken = getToken('csrftoken');
 </head>
 <body>
 
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <a class="navbar-brand" href="{% url 'store' %}">Ecom</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -55,17 +56,45 @@ var csrftoken = getToken('csrftoken');
 
     <!-- Move the cart link outside of the collapse div -->
     <a href="{% url 'cart' %}" class="btn btn-primary d-lg-none mr-3">
-        <i class="fas fa-shopping-cart"></i> Cart
-        <span class="badge badge-light">{{ cartItems }}</span>
-    </a>
+      <i class="fas fa-shopping-cart"></i> Cart
+      <span class="badge badge-light">{{ cart_total }}</span>
+  </a>
+  
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'store' %}">Home</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Products</a>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownDrinks" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Drinks
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownDrinks">
+                    <a class="dropdown-item" href="#">Coffee</a>
+                    <a class="dropdown-item" href="#">Tea</a>
+                    <a class="dropdown-item" href="#">Soft Drinks</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownClothes" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Clothes
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownClothes">
+                    <a class="dropdown-item" href="{% url 'mens_clothing_list' %}">Men's Clothing</a>
+                    <a class="dropdown-item" href="{% url 'womens_clothing_list' %}">Women's Clothing</a>
+                    <a class="dropdown-item" href="{% url 'kids_clothing_list' %}">Kids' Clothing</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownKitchen" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Kitchen
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownKitchen">
+                    <a class="dropdown-item" href="#">Cookware</a>
+                    <a class="dropdown-item" href="#">Cutlery</a>
+                    <a class="dropdown-item" href="#">Appliances</a>
+                </div>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">About Us</a>
@@ -74,25 +103,32 @@ var csrftoken = getToken('csrftoken');
                 <a class="nav-link" href="#">Contact</a>
             </li>
         </ul>
+    </div>
 
-        <div class="my-2 my-lg-0 d-none d-lg-block">
-            <a href="{% url 'cart' %}" class="btn btn-primary mr-3">
-                <i class="fas fa-shopping-cart"></i> Cart
-                <span class="badge badge-light">{{ cartItems }}</span>
-            </a>
-            <a href="{% url 'logout' %}" class="btn btn-warning">Logout</a>
-        </div>
+    <!-- Cart and Logout links for larger screens -->
+    <div class="my-2 my-lg-0 d-none d-lg-block ml-3">
+        <a href="{% url 'cart' %}" class="btn btn-primary">
+            <i class="fas fa-shopping-cart"></i> Cart
+            <span class="badge badge-light">{{ cartItems }}</span>
+        </a>
+        <a href="{% url 'logout' %}" class="btn btn-warning ml-2">Logout</a>
     </div>
 </nav>
 
 
-     <div class="container">
-            <br>
-            {% block content %}
+<div class="search-form-container">
+  <form method="get" action="{% url 'product_search' %}">
+      <input class="search-input" type="text" name="search_query" placeholder="Enter your search query...">
+      <button class="search-button" type="submit">Search</button>
+  </form>
+</div>
 
+<div class="container">
+    <br>
+    {% block content %}
+    {% endblock content %}
+</div>
 
-             {% endblock content %}
-     </div>
      <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
 
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>

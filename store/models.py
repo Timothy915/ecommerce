@@ -12,11 +12,13 @@ class Customer(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=200, null=True)
     price = models.FloatField()
+    description = models.TextField(null=True, blank=True)  # Add the description field
     digital = models.BooleanField(default=False, null=True, blank=False)
     image = models.ImageField(null=True, blank=True)
+   
 
     def __str__(self):
-        return self.name or "Unnamed Product"
+        return self.name 
 
     @property
     def imageURL(self):
@@ -29,12 +31,19 @@ class Product(models.Model):
 class Order(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, blank=True, null=True)
     date_ordered = models.DateTimeField(auto_now_add=True)
-
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, default=1)  # Set a default product ID
     complete = models.BooleanField(default=False, null=True, blank=False)
     transaction_id = models.CharField(max_length=200, null=True)
 
     def __str__(self):
         return str(self.id)
+    
+    def get_cart_total(self):
+        # Implement logic to calculate and return the cart total as a float
+        total = 0
+        for item in self.orderitem_set.all():
+            total += item.get_total()  # Example: Calculate the total based on order items
+        return total
 
     @property
     def get_cart_items(self):
@@ -109,4 +118,54 @@ class Promotion(models.Model):
 
     def __str__(self):
         return self.name
+
+class MensClothing(models.Model):
+    name = models.CharField(max_length=200, null=True)
+    price = models.FloatField()
+    description = models.TextField(null=True, blank=True)
+    image = models.ImageField(null=True, blank=True)
+
+    def __str__(self):
+        return self.name or "Unnamed Men's Clothing"
+
+    @property
+    def imageURL(self):
+        try:
+            url = self.image.url
+        except:
+            url = ''
+        return url
+
+class WomensClothig(models.Model):
+    name = models.CharField(max_length=200, null=True)
+    price = models.FloatField()
+    description = models.TextField(null=True, blank=True)
+    image = models.ImageField(null=True, blank=True)
+
+    def __str__(self):
+        return self.name
     
+    @property
+    def imageURL(self):
+        try:
+            url = self.image.url
+        except:
+            url = ''
+        return url
+    
+class KidsClothing(models.Model):
+    name = models.CharField(max_length=200, null=True)
+    price = models.FloatField()
+    description = models.TextField(null=True, blank=True)
+    image = models.ImageField(null=True)
+
+    def __str__(self):
+        return self.name
+  
+    @property
+    def imageURL(self):
+        try:
+            url = self.image.url
+        except:
+            url = ''
+        return url

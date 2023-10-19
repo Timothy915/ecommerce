@@ -60,33 +60,50 @@
             flex-basis: 100%; /* Full width on the smallest screens */
         }
     }
-        /* Style the form container */
-        .search-form-container {
-        text-align: center;
-        margin: 20px;
-        margin-top: 50px;
-    }
+/* Style the form container */
+.search-form-container {
+    text-align: center;
+    margin: 20px auto; /* Center the form horizontally */
+    margin-top: 50px;
+    max-width: 400px; /* Limit the width of the form container */
+}
 
-    /* Style the form fields */
-    .search-input {
-        padding: 10px;
-        width: 300px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-size: 16px;
-    }
+/* Style the form fields */
+.search-input {
+    padding: 10px;
+    width: 100%;
+    max-width: 300px; /* Limit the input width */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-right: 10px; /* Add some spacing between input and button */
+}
 
-    /* Style the search button */
-    .search-button {
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        font-size: 16px;
-        cursor: pointer;
-    }
+/* Style the search button */
+.search-button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
 
+/* Style the search button on hover */
+.search-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+  /* Center the <h1> element */
+    h1 {
+    text-align: center;
+  }
+
+  /* Apply a color to the <h1> element */
+  h1 {
+    color: #FF5733; /* Replace with your desired color code */
+  }
   /* Keyframes animation for the slide */
   @keyframes slide {
             0% {
@@ -175,6 +192,7 @@
         }
     </style>
 </head>
+<!--
 <div class="promotion-section">
     <div class="logos">
         {% for promotion in promotions %}
@@ -186,7 +204,7 @@
                         <img src="{{ promotion.promotion_image }}" alt="{{ promotion.name }}" class="promotion-image">
                     {% endif %}
                 </div>
-                <!-- Timer element for the promotion -->
+               Timer element for the promotion 
                 <div class="promotion-timer">
                     {% if promotion.start_date <= current_date and promotion.end_date >= current_date %}
                         {% with time_left=promotion.end_date|timeuntil:current_date %}
@@ -204,15 +222,12 @@
         {% endfor %}
     </div>
 </div>
+-->
 
 
 
-<div class="search-form-container">
-    <form method="get" action="{% url 'product_search' %}">
-        <input class="search-input" type="text" name="search_query" placeholder="Enter your search query...">
-        <button class="search-button" type="submit">Search</button>
-    </form>
-</div>
+
+<h1> Top Products </h1>
 
     <div class="product-container">
         {% for product in products %}
@@ -222,13 +237,44 @@
             <p>K{{ product.price|floatformat:2 }}</p>
             <button data-product="{{ product.id }}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
             <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-success">View</a>
-            <a class="btn btn-outline-success" href="#">Buy Now</a>
+            <a href="{% url 'buy_now' product_id=product.id %}" class="btn btn-outline-success">Buy Now</a>
+
         </div>
         {% endfor %}
     </div>
 </div>
 
+
+
+<div class="product-container">
+    {% for item in womens_clothing_items %}
+    <div class="product">
+        <img src="{{ item.imageURL }}" alt="{{ item.name }}">
+        <h3>{{ item.name }}</h3>
+        <p>K{{ item.price|floatformat:2 }}</p>
+        <button data-product="{{ item.id }}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
+        <a href="{% url 'view_clothing_detail' item.id %}" class="btn btn-outline-success">View</a>
+
+        <a href="{% url 'buy_now' product_id=item.id %}" class="btn btn-outline-success">Buy Now</a>
+    </div>
+    {% endfor %}
+</div>
+
+
+
+
     
+<script>
+    // Use JavaScript to periodically refresh the content
+    setInterval(function () {
+        // Make an AJAX request to the store view
+        $.get('{% url "store" %}', function (data) {
+            // Replace the current content with the updated content
+            $('.womens-clothing-container').html(data.womens_clothing_products);
+            $('.mens-clothing-container').html(data.mens_clothing_products);
+        });
+    }, 5000);  // Refresh every 5 seconds (adjust the interval as needed)
+</script>
 
 <!-- Link to the external JavaScript file -->
 <script src="{% static 'js/cart.js' %}"></script>

@@ -23,6 +23,18 @@ from .models import Promotion
 from django.utils import timezone
 from django.shortcuts import render, get_object_or_404
 from .models import Product, OrderItem, Customer, Order
+from .models import MensClothing
+from .models import WomensClothig
+
+from .models import KidsClothing
+
+from django.db.models import Q
+from random import sample
+
+
+
+
+
 
 
 def registerPage(request):
@@ -68,35 +80,28 @@ def logoutUser(request):
 
 @login_required(login_url='login')
 @transaction.atomic  # Wrap the store view in a transaction
+
 def store(request):
-    customer, created = Customer.objects.get_or_create(user=request.user)
-
-    # Check if an incomplete order exists for the customer
-    try:
-        order = Order.objects.get(customer=customer, complete=False)
-    except Order.DoesNotExist:
-        order = None
-
-    if order and not order.complete:
-        # An incomplete order exists; continue using it
-        items = order.orderitem_set.all()
-        cartItems = order.get_cart_items
-    else:
-        # Create a new order only if there's no incomplete order
-        if order is None:
-            order = Order.objects.create(customer=customer, complete=False)
-        items = []
-        cartItems = 0  # Initialize cartItems as 0
-
-    # Retrieve promotions from the database
-    promotions = Promotion.objects.all()
-
+    # Retrieve all product items
     products = Product.objects.all()
-    context = {'products': products, 'cartItems': cartItems, 'promotions': promotions}
+
+    # Initialize cartItems as 0
+    cartItems = 0
+
+    # Check if there's an active order for the customer
+    if request.user.is_authenticated:
+        customer, created = Customer.objects.get_or_create(user=request.user)
+        try:
+            order = Order.objects.get(customer=customer, complete=False)
+            cartItems = order.get_cart_items
+        except Order.DoesNotExist:
+            pass
+
+    context = {
+        'products': products,
+        'cartItems': cartItems,
+    }
     return render(request, 'store/Store.html', context)
-
-
-
 def cart(request):
     order = None  # Initialize order with None when the user is not authenticated
     if request.user.is_authenticated:
@@ -218,16 +223,27 @@ def processOrder(request):
     return JsonResponse('Payment complete!', safe=False)
 
 
+
+from django.db.models import Q
+
 def productSearch(request):
     form = ProductSearchForm(request.GET)
-    results = None
+    results = []  # Initialize results as an empty list
     cartItems = 0  # Initialize cartItems as 0
     cartTotal = 0  # Initialize cartTotal as 0
 
     if request.method == 'GET':
         if form.is_valid():
             search_query = form.cleaned_data.get('search_query')
-            results = Product.objects.filter(name__icontains=search_query)
+
+            # Create a Q object to search for "name" containing the search_query or specific keywords
+            q_objects = Q(name__icontains=search_query) | Q(name__icontains="women") | Q(name__icontains="men")
+
+            # Perform the search for each model and append the results to the list
+            results.extend(Product.objects.filter(q_objects))
+            results.extend(WomensClothig.objects.filter(q_objects))  # Use the correct model name
+            results.extend(MensClothing.objects.filter(q_objects))   # Use the correct model name
+
 
     try:
         # Calculate the cart items and cart total
@@ -258,6 +274,8 @@ def productSearch(request):
         logger.error(f"TemplateDoesNotExist error: {e}")
         return HttpResponse("An error occurred while rendering the template.", status=500)
 
+
+
 def promotion_view(request):
     current_date = timezone.now()
     promotions = Promotion.objects.all()
@@ -285,3 +303,38 @@ def product_detail(request, product_id):
 
     context = {'product': product, 'cart_total': cart_total, 'cart_items': cart_items}
     return render(request, 'store/product_detail.html', context)
+
+
+def buy_now(request, product_id):
+    product = get_object_or_404(Product, pk=product_id)
+
+    if request.user.is_authenticated:
+        customer, created = Customer.objects.get_or_create(user=request.user)
+        
+        # Clear the user's existing cart (incomplete order)
+        Order.objects.filter(customer=customer, complete=False).delete()
+
+        # Create a new order for the selected product
+        order = Order.objects.create(customer=customer, complete=False)
+        OrderItem.objects.create(order_ref=order, product=product, quantity=1)
+
+        return redirect('checkout')
+    else:
+        # Handle the case when the user is not authenticated (you may want to redirect them to the login page)
+        return redirect('login')
+
+def mens_clothing_list(request):
+    mens_clothing_items = MensClothing.objects.all()
+    return render(request, 'store/clothings/mens_clothing_list.html', {'mens_clothing_items': mens_clothing_items})
+
+def view_clothing_detail(request, item_id):
+    clothing_item = get_object_or_404(MensClothing, pk=item_id)
+    return render(request, 'store/clothings/clothing_detail.html', {'clothing_item': clothing_item})
+
+def womens_clothing_list(request):
+    womens_clothing_items = WomensClothig.objects.all()
+    return render(request, 'store/clothings/womens_clothing_list.html', {'womens_clothing_items': womens_clothing_items})
+
+def kids_clothing_list(request):
+    kids_clothing_items = KidsClothing.objects.all()
+    return render(request,  'store/clothings/kids_clothing_list.html', {'kids_clothing_item': kids_clothing_items})

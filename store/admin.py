@@ -2,6 +2,9 @@ from django.contrib import admin
 from .models import Customer, Product, Order, OrderItem, ShippingAddress, Delivery
 from .models import Promotion
 from django.utils import timezone
+from .models import MensClothing
+from .models import WomensClothig
+from .models import KidsClothing
 
 # Register your models here.
 admin.site.register(Customer)
@@ -96,4 +99,10 @@ class PromotionAdmin(admin.ModelAdmin):
     list_display = ('name', 'discount_percentage', 'start_date', 'end_date')
 
 admin.site.register(Promotion, PromotionAdmin)
+
+admin.site.register(MensClothing)
+admin.site.register(WomensClothig)
+admin.site.register(KidsClothing)
+
+
 

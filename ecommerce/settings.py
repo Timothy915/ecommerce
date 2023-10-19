@@ -26,13 +26,14 @@ SECRET_KEY = 'django-insecure-_onvjj^i_od99%9%60i^58s6h9w-%qgw_+q+9wuda=5z9hu34f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+ALLOWED_HOSTS = ['https://smart-rabbits-make.loca.lt'],
 ALLOWED_HOSTS = []
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'jazzmin',
+    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -72,6 +73,8 @@ TEMPLATES = [
     },
 ]
 
+
+
 WSGI_APPLICATION = 'ecommerce.wsgi.application'
 
 
@@ -80,12 +83,8 @@ WSGI_APPLICATION = 'ecommerce.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',  # Use the PostgreSQL database engine
-        'NAME': 'newdb',  # Replace with your desired database name
-        'USER': 'newuser',  # Replace with your PostgreSQL username
-        'PASSWORD': 'password',  # Replace with your PostgreSQL password
-        'HOST': 'localhost',  # Or the host where your PostgreSQL server is running
-        'PORT': '',  # Leave this empty to use the default PostgreSQL port (5432)
+        'ENGINE': 'django.db.backends.sqlite3',  # Use the SQLite database engine
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),  # Path to the SQLite database file
     }
 }
 

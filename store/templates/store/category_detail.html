@@ -1,0 +1,6 @@
+<!-- In a navigation menu or category listing -->
+<ul>
+    {% for category in categories %}
+        <li><a href="{% url 'category_detail' category.slug %}">{{ category.name }}</a></li>
+    {% endfor %}
+</ul>

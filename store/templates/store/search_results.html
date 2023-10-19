@@ -51,7 +51,7 @@
         <h3>{{ product.name }}</h3>
         <p>K{{ product.price|floatformat:2 }}</p>
         <button data-product="{{ product.id }}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
-        <a class="btn btn-outline-success" href="#">View</a>
+        <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-success">View</a>
     </div>
     {% endfor %}
 </div>

@@ -1,6 +1,12 @@
 {% extends 'store/Main.html' %}
 {% load static %}
 {% block content %}
+<style>
+    .box-element{
+      
+        margin-top: 50px;
+    }
+</style>
      <div class="row">
         <div class="col-lg-6">
             <div class="box-element" id="form-wrapper">
@@ -43,7 +49,7 @@
             <br>
             <!-- PayPal options initially hidden -->
             <div class="box-element hidden" id="payment-info1">
-                <small>Paypal Options</small>
+                <small></small>
             </div>
             <div class="box-element hidden" id="payment-info2">
                 <small>Paypal Options</small>

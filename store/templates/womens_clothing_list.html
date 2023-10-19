@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mens Clothing List</title>
+</head>
+<body>
+    <h1>Men's Clothing</h1>
+    <ul>
+        {% for item in mens_clothing_items %}
+            <li>
+                <h2>{{ item.name }}</h2>
+                <p>Price: ${{ item.price }}</p>
+                <p>Description: {{ item.description }}</p>
+                <img src="{{ item.imageURL }}" alt="{{ item.name }}" width="200">
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

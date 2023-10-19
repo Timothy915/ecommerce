@@ -1,0 +1,12 @@
+<!-- baby_items_category_detail.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>{{ baby_items_category.name }}</h2>
+<p>{{ baby_items_category.description }}</p>
+<ul>
+    {% for product in baby_items_products %}
+        <li><a href="{% url 'product_detail' product.id %}">{{ product.name }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}
